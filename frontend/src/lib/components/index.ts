@@ -1,3 +1,4 @@
-import Board from "./index.svelte";
+import Piece from "./Piece.svelte";
+import Celebration from "./Celebration.svelte";
 
-export { Board };
+export { Piece, Celebration };

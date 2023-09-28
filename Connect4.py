@@ -13,16 +13,21 @@ class Connect4Env(gym.Env):
     def step(self, action):
         column = action
         row = self._drop_disc(column)
+        if isinstance(action, int):
+            info = {"action": action}
+        else:
+            info = {"action": action.tolist()}
+
         if row is None:  # Invalid move
-            return self._get_obs(), -10, False, False, {}
+            return self._get_obs(), -10, False, False, info
 
         done = self._check_for_win(row, column) or not np.any(
             self.board == 0
         )  # Check for win or draw
 
-        reward = 1 if done else 0
+        reward = 10 if done else 0.1
         self.current_player = 3 - self.current_player  # Switch player
-        return self._get_obs(), reward, done, False, {}
+        return self._get_obs(), reward, done, False, info
 
     def reset(self, seed=None, options=None):
         self.board.fill(0)

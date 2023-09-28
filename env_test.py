@@ -30,8 +30,27 @@ def manual_play():
         print("Actual Player :", env.current_player)
         print(obs)
         action = int(input("Enter your action: "))
-        obs, reward, done, info = env.step(action)
+        obs, reward, done, _, info = env.step(action)
         print(f"Action: {action}, Reward: {reward}, Info: {info}")
+
+
+def random_play_agent(agent_path, episodes=100):
+    model = PPO.load(agent_path)
+    env = Connect4Env()
+
+    for e in range(episodes):
+        print(f"Episode : {e} of {episodes}")
+        obs, _ = env.reset()
+        done = False
+
+        while not done:
+            print("Board :")
+            print("Actual Player :", env.current_player)
+            print(obs)
+            action, _ = model.predict(obs)
+            print("Agent Action", action)
+            obs, reward, done, _, info = env.step(action)
+            print(f"Action: {action}, Reward: {reward}, Info: {info}")
 
 
 def play_with_agent(agent_path):
@@ -55,4 +74,5 @@ def play_with_agent(agent_path):
 
 # random_play()
 # manual_play()
-play_with_agent("./models/ppo_connect_four")
+# play_with_agent("./models/ppo_connect_four")
+random_play_agent("./models/ppo_connect_four", episodes=1)
