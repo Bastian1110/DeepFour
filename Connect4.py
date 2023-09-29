@@ -13,17 +13,18 @@ class Connect4Env(gym.Env):
     def step(self, action):
         column = action
         row = self._drop_disc(column)
-        if isinstance(action, int):
-            info = {"action": action}
-        else:
-            info = {"action": action.tolist()}
+        info = (
+            {"action": action}
+            if isinstance(action, int)
+            else {"action": action.tolist()}
+        )
 
         if row is None:  # Invalid move
             return self._get_obs(), -10, False, False, info
 
-        done = self._check_for_win(row, column) or not np.any(
+        done = self._check_for_win(self.current_player, row, column) or not np.any(
             self.board == 0
-        )  # Check for win or draw
+        )
 
         reward = 10 if done else 0.1
         self.current_player = 3 - self.current_player  # Switch player
@@ -34,6 +35,12 @@ class Connect4Env(gym.Env):
         self.current_player = 1
         return self._get_obs(), {}
 
+    def get_next_player(self, player):
+        if player == 1:
+            return 2
+        else:
+            return 1
+
     def _drop_disc(self, column):
         for row in range(5, -1, -1):
             if self.board[row, column] == 0:
@@ -41,27 +48,19 @@ class Connect4Env(gym.Env):
                 return row
         return None  # Invalid move
 
-    def _check_for_win(self, row, column):
+    def _check_for_win(self, player, row, column):
         directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
         for dr, dc in directions:
             count = 1
             for i in range(1, 4):
                 r, c = row + dr * i, column + dc * i
-                if (
-                    0 <= r < 6
-                    and 0 <= c < 7
-                    and self.board[r, c] == self.current_player
-                ):
+                if 0 <= r < 6 and 0 <= c < 7 and self.board[r, c] == player:
                     count += 1
                 else:
                     break
             for i in range(1, 4):
                 r, c = row - dr * i, column - dc * i
-                if (
-                    0 <= r < 6
-                    and 0 <= c < 7
-                    and self.board[r, c] == self.current_player
-                ):
+                if 0 <= r < 6 and 0 <= c < 7 and self.board[r, c] == player:
                     count += 1
                 else:
                     break

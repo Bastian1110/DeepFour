@@ -11,15 +11,17 @@
   let done = false;
 
   const updateGameState = async () => {
-    try {
-      const response = await fetch("http://localhost:8082/game-state");
-      const data = await response.json();
-      matrix = data.board;
-      if (player == 2) {
-        await handleRobotAction();
+    if (!done) {
+      try {
+        const response = await fetch("http://localhost:8082/game-state");
+        const data = await response.json();
+        matrix = data.board;
+        if (player == 2) {
+          await handleRobotAction();
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -61,6 +63,9 @@
       setTimeout(() => {
         putPiece(data.info.action);
       }, 1200);
+      if (data.done) {
+        triggerConfetti();
+      }
     } catch (err) {
       console.log(err);
     }
