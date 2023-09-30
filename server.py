@@ -1,12 +1,13 @@
 from flask import Flask, jsonify, request
 from Connect4 import Connect4Env
 from stable_baselines3 import DQN
+from stable_baselines3 import PPO
 from flask_cors import CORS
 
 env = Connect4Env()
 app = Flask("Connect 4")
 CORS(app)
-model = DQN.load("./models/ppo_connect_four")
+model = DQN.load("./models/dqn_connect_four")
 
 
 @app.route("/reset")
