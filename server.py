@@ -7,7 +7,7 @@ from flask_cors import CORS
 env = Connect4Env()
 app = Flask("Connect 4")
 CORS(app)
-model = DQN.load("./models/dqn_connect_four")
+model = DQN.load("./models/dqn_connect_four_overkill")
 
 
 @app.route("/reset")
